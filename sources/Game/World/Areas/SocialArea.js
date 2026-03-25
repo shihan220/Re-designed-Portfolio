@@ -13,6 +13,7 @@ export class SocialArea extends Area
         super(model)
 
         this.center = this.references.items.get('center')[0].position
+        this.hiddenSocialObjects = [ 'x', 'bluesky.001', 'youtube' ]
 
         // Debug
         if(this.game.debug.active)
@@ -33,16 +34,11 @@ export class SocialArea extends Area
 
     setLinks()
     {
-        const radius = 6
-        let i = 0
+        this.hideUnusedSocialObjects()
 
         for(const link of socialData)
         {
-            const angle = i * Math.PI / (socialData.length - 1)
-            const position = this.center.clone()
-            position.x += Math.cos(angle) * radius
-            position.y = 1
-            position.z -= Math.sin(angle) * radius
+            const position = this.getLinkPosition(link)
 
             this.interactivePoint = this.game.interactivePoints.create(
                 position,
@@ -69,8 +65,36 @@ export class SocialArea extends Area
                     this.game.inputs.interactiveButtons.removeItems(['interact'])
                 }
             )
-            
-            i++
+        }
+    }
+
+    getLinkPosition(link)
+    {
+        if(link.objectName)
+        {
+            const object = this.objects.items.find((item) => item.visual?.object3D.name === link.objectName)
+
+            if(object?.visual?.object3D)
+            {
+                const position = object.visual.object3D.position.clone()
+                position.y = 1
+                return position
+            }
+        }
+
+        const position = this.center.clone()
+        position.y = 1
+        return position
+    }
+
+    hideUnusedSocialObjects()
+    {
+        for(const objectName of this.hiddenSocialObjects)
+        {
+            const object = this.objects.items.find((item) => item.visual?.object3D.name === objectName)
+
+            if(object)
+                this.game.objects.disable(object)
         }
     }
 

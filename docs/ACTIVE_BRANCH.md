@@ -1,16 +1,17 @@
-# Active Branch: backend
+# Active Branch: dev
 
-You are on the `backend` branch.
+You are on the `dev` branch.
 
-Use this branch when the work is about:
+Use this branch as the main working branch where active changes are combined before they are split, reviewed, or merged elsewhere.
 
-- API routes
-- database and storage
-- authentication
-- realtime or websocket services
-- server-side integration for portfolio features
+Typical work on this branch:
 
-Recommended starting point:
+- front-end updates
+- backend integration
+- animation and interaction work
+- combined testing across the full project
 
-- `sources/Game/Server.js` for the current client-side connection logic
-- create new server files here as backend work begins
+Current branch role:
+
+- integrates the `front-end`, `backend`, and `animation` lines of work
+- keeps day-to-day development in one place
