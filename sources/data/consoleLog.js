@@ -21,15 +21,11 @@ const text = `
 ╚═══════════════════════╝
 
 ╔═ Socials ═══════════════╗
-║ Mail           ⇒ simon.bruno.77@gmail.com
-║ X              ⇒ https://x.com/bruno_simon
-║ BlueSKy        ⇒ https://bsky.app/profile/bruno-simon.bsky.social
-║ Discord public ⇒ https://discord.com/channels/769928116701233152/1445064878384480288
-║ Discord PM     ⇒ https://discord.com/users/202907325722263553
-║ Youtube        ⇒ https://www.youtube.com/@BrunoSimon
+║ Mail           ⇒ mohammad.shihan@outlook.com
+║ Discord        ⇒ shihan_up2299021
 ║ Twitch         ⇒ https://www.twitch.tv/bruno_simon_dev
-║ GitHub         ⇒ https://github.com/brunosimon
-║ LinkedIn       ⇒ https://www.linkedin.com/in/simonbruno77/
+║ GitHub         ⇒ https://github.com/shihan220
+║ LinkedIn       ⇒ https://www.linkedin.com/in/mohammad-shihan/
 ╚═══════════════════════╝
 
 ╔═ Debug ═══════════════╗
@@ -53,14 +49,12 @@ const text = `
 ╚═══════════════════════╝
 
 ╔═ Devlogs ═════════════╗
-║ I’ve been making devlogs since the very start of this portfolio
-║ and you can find them all on my Youtube channel.
-║ https://www.youtube.com/@BrunoSimon
+║ I have been documenting the build process of this portfolio as it evolves.
 ╚═══════════════════════╝
 
 ╔═ Source code ═════════╗
 ║ The code is available on GitHub under MIT license. Even the Blender files are there, so have fun!
-║ https://github.com/brunosimon/folio-2025
+║ https://github.com/shihan220/Re-designed-Portfolio
 ║ For security reasons, I’m not sharing the server code, but the portfolio works without it.
 ╚═══════════════════════╝
 
