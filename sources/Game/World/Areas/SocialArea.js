@@ -14,7 +14,8 @@ export class SocialArea extends Area
 
         this.center = this.references.items.get('center')[0].position
         this.socialObjectSlots = [ 'x', 'bluesky.001', 'youtube', 'mail', 'twitch', 'gitHub', 'linkedIn', 'discord' ]
-        this.socialPlatformObjectName = '.002'
+        this.socialPlatformBodyObjectName = '.002'
+        this.socialPlatformVisualObjectName = 'Cube.133'
         this.activeSocialObjectNames = socialData.map((link) => link.objectName).filter(Boolean)
         this.hiddenSocialObjects = this.socialObjectSlots.filter((name) => !this.activeSocialObjectNames.includes(name))
 
@@ -159,13 +160,18 @@ export class SocialArea extends Area
 
     replaceLegacySocialPlatforms(targetSlots)
     {
-        const legacyPlatform = this.getSocialObject(this.socialPlatformObjectName)
+        const legacyPlatformBody = this.getSocialObject(this.socialPlatformBodyObjectName)
+        const legacyPlatformVisual = this.getSocialObject(this.socialPlatformVisualObjectName)
 
-        if(legacyPlatform?.visual?.object3D)
-            legacyPlatform.visual.object3D.removeFromParent()
+        if(legacyPlatformBody?.visual?.object3D)
+            legacyPlatformBody.visual.object3D.removeFromParent()
+
+        if(legacyPlatformVisual)
+            this.game.objects.disable(legacyPlatformVisual)
 
         if(this.socialPlatforms)
         {
+            this.objects.hideable = this.objects.hideable.filter((item) => item !== this.socialPlatforms)
             this.socialPlatforms.traverse((child) =>
             {
                 if(child.geometry)
@@ -174,10 +180,10 @@ export class SocialArea extends Area
             this.socialPlatforms.removeFromParent()
         }
 
-        if(!legacyPlatform?.physical?.colliders?.length)
+        if(!legacyPlatformBody?.physical?.colliders?.length)
             return
 
-        const platformMaterial = legacyPlatform.visual?.object3D?.material || new THREE.MeshLambertNodeMaterial({ color: '#7a5a48' })
+        const platformMaterial = legacyPlatformVisual?.visual?.object3D?.material || new THREE.MeshLambertNodeMaterial({ color: '#7a5a48' })
 
         this.socialPlatforms = new THREE.Group()
         this.socialPlatforms.userData.preventPreRender = true
@@ -185,7 +191,7 @@ export class SocialArea extends Area
         for(const slotName of targetSlots)
         {
             const slotIndex = this.socialObjectSlots.indexOf(slotName)
-            const collider = legacyPlatform.physical.colliders[slotIndex]
+            const collider = legacyPlatformBody.physical.colliders[slotIndex]
             const halfExtents = collider?.shape?.halfExtents
 
             if(!collider || !halfExtents)
