@@ -1,12 +1,21 @@
 # Backend Scope
 
-This folder documents the kind of work that belongs on the `backend` branch.
+This branch now includes a minimal local backend for the portfolio.
 
-Focus on:
+## What it does
 
-- API design
-- storage
-- authentication
-- websocket or real-time services
+- serves `GET /health` on `http://127.0.0.1:8787/health`
+- serves a WebSocket server on `ws://127.0.0.1:8787`
+- sends the `init` payload expected by the frontend
+- handles `whispersInsert`, `cookiesInsert`, `cataclysmInsert`, and `circuitInsert`
+- keeps state in memory for local development
 
-The current portfolio does not yet include a full backend app, so this branch is a clean lane for that future work.
+## Run commands
+
+- `npm run dev:backend`
+- `npm run dev:frontend`
+- `npm run dev:all`
+
+## Main file
+
+- `backend/server.js`
