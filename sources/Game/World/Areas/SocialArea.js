@@ -14,6 +14,7 @@ export class SocialArea extends Area
 
         this.center = this.references.items.get('center')[0].position
         this.socialObjectSlots = [ 'x', 'bluesky.001', 'youtube', 'mail', 'twitch', 'gitHub', 'linkedIn', 'discord' ]
+        this.socialPlatformObjectName = '.002'
         this.activeSocialObjectNames = socialData.map((link) => link.objectName).filter(Boolean)
         this.hiddenSocialObjects = this.socialObjectSlots.filter((name) => !this.activeSocialObjectNames.includes(name))
 
@@ -123,6 +124,7 @@ export class SocialArea extends Area
         }
 
         this.hideUnusedSocialObjects()
+        this.replaceLegacySocialPlatforms(targetSlots)
     }
 
     getLinkPosition(link)
@@ -153,6 +155,55 @@ export class SocialArea extends Area
             if(object)
                 this.game.objects.disable(object)
         }
+    }
+
+    replaceLegacySocialPlatforms(targetSlots)
+    {
+        const legacyPlatform = this.getSocialObject(this.socialPlatformObjectName)
+
+        if(legacyPlatform?.visual?.object3D)
+            legacyPlatform.visual.object3D.removeFromParent()
+
+        if(this.socialPlatforms)
+        {
+            this.socialPlatforms.traverse((child) =>
+            {
+                if(child.geometry)
+                    child.geometry.dispose()
+            })
+            this.socialPlatforms.removeFromParent()
+        }
+
+        if(!legacyPlatform?.physical?.colliders?.length)
+            return
+
+        const platformMaterial = legacyPlatform.visual?.object3D?.material || new THREE.MeshLambertNodeMaterial({ color: '#7a5a48' })
+
+        this.socialPlatforms = new THREE.Group()
+        this.socialPlatforms.userData.preventPreRender = true
+
+        for(const slotName of targetSlots)
+        {
+            const slotIndex = this.socialObjectSlots.indexOf(slotName)
+            const collider = legacyPlatform.physical.colliders[slotIndex]
+            const halfExtents = collider?.shape?.halfExtents
+
+            if(!collider || !halfExtents)
+                continue
+
+            const platform = new THREE.Mesh(
+                new THREE.BoxGeometry(halfExtents.x * 2, halfExtents.y * 2, halfExtents.z * 2),
+                platformMaterial
+            )
+            platform.castShadow = true
+            platform.receiveShadow = true
+            platform.position.copy(collider.translation())
+            platform.quaternion.copy(collider.rotation())
+            this.socialPlatforms.add(platform)
+        }
+
+        this.game.scene.add(this.socialPlatforms)
+        this.objects.hideable.push(this.socialPlatforms)
     }
 
     setFans()
