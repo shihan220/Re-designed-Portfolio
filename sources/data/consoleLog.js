@@ -23,7 +23,6 @@ const text = `
 ╔═ Socials ═══════════════╗
 ║ Mail           ⇒ mohammad.shihan@outlook.com
 ║ Discord        ⇒ shihan_up2299021
-║ Twitch         ⇒ https://www.twitch.tv/bruno_simon_dev
 ║ GitHub         ⇒ https://github.com/shihan220
 ║ LinkedIn       ⇒ https://www.linkedin.com/in/mohammad-shihan/
 ╚═══════════════════════╝

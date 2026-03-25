@@ -13,7 +13,9 @@ export class SocialArea extends Area
         super(model)
 
         this.center = this.references.items.get('center')[0].position
-        this.hiddenSocialObjects = [ 'x', 'bluesky.001', 'youtube' ]
+        this.socialObjectSlots = [ 'x', 'bluesky.001', 'youtube', 'mail', 'twitch', 'gitHub', 'linkedIn', 'discord' ]
+        this.activeSocialObjectNames = socialData.map((link) => link.objectName).filter(Boolean)
+        this.hiddenSocialObjects = this.socialObjectSlots.filter((name) => !this.activeSocialObjectNames.includes(name))
 
         // Debug
         if(this.game.debug.active)
@@ -34,7 +36,7 @@ export class SocialArea extends Area
 
     setLinks()
     {
-        this.hideUnusedSocialObjects()
+        this.layoutSocialObjects()
 
         for(const link of socialData)
         {
@@ -68,11 +70,66 @@ export class SocialArea extends Area
         }
     }
 
+    getSocialObject(name)
+    {
+        return this.objects.items.find((item) => item.visual?.object3D.name === name)
+    }
+
+    layoutSocialObjects()
+    {
+        const slotTransforms = new Map()
+
+        for(const slotName of this.socialObjectSlots)
+        {
+            const object = this.getSocialObject(slotName)
+
+            if(object?.visual?.object3D)
+            {
+                slotTransforms.set(
+                    slotName,
+                    {
+                        position: object.visual.object3D.position.clone(),
+                        quaternion: object.visual.object3D.quaternion.clone()
+                    }
+                )
+            }
+        }
+
+        const startIndex = Math.floor((this.socialObjectSlots.length - this.activeSocialObjectNames.length) / 2)
+        const targetSlots = this.socialObjectSlots.slice(startIndex, startIndex + this.activeSocialObjectNames.length)
+
+        for(let i = 0; i < this.activeSocialObjectNames.length; i++)
+        {
+            const objectName = this.activeSocialObjectNames[i]
+            const targetSlotName = targetSlots[i]
+            const object = this.getSocialObject(objectName)
+            const targetTransform = slotTransforms.get(targetSlotName)
+
+            if(!object?.visual?.object3D || !targetTransform)
+                continue
+
+            if(object.physical)
+            {
+                object.physical.body.setLinvel({ x: 0, y: 0, z: 0 }, false)
+                object.physical.body.setAngvel({ x: 0, y: 0, z: 0 }, false)
+                object.physical.body.setTranslation(targetTransform.position, false)
+                object.physical.body.setRotation(targetTransform.quaternion, false)
+                object.physical.body.sleep()
+            }
+
+            object.visual.object3D.position.copy(targetTransform.position)
+            object.visual.object3D.quaternion.copy(targetTransform.quaternion)
+            object.needsUpdate = false
+        }
+
+        this.hideUnusedSocialObjects()
+    }
+
     getLinkPosition(link)
     {
         if(link.objectName)
         {
-            const object = this.objects.items.find((item) => item.visual?.object3D.name === link.objectName)
+            const object = this.getSocialObject(link.objectName)
 
             if(object?.visual?.object3D)
             {
@@ -91,7 +148,7 @@ export class SocialArea extends Area
     {
         for(const objectName of this.hiddenSocialObjects)
         {
-            const object = this.objects.items.find((item) => item.visual?.object3D.name === objectName)
+            const object = this.getSocialObject(objectName)
 
             if(object)
                 this.game.objects.disable(object)
